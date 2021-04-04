@@ -4,8 +4,8 @@ import { apiCallError, beginApiCall } from "../api-status/apiStatusActions";
 import { LoginActionType, LOGIN_SUCCESS } from "./loginActionTypes";
 import * as loginApi from "../../api/login/loginApi";
 
-function loginSuccess(token: UserTokenDto): LoginActionType {
-  return { type: LOGIN_SUCCESS, token };
+function loginSuccess(userToken: UserTokenDto): LoginActionType {
+  return { type: LOGIN_SUCCESS, userToken };
 }
 
 export function login(loginDto: LoginDto) {
