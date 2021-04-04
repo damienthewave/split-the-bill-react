@@ -2,9 +2,9 @@ import { applyMiddleware, createStore, Store } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { rootReducer } from "./rootReducer";
 import thunk from "redux-thunk";
-import { appState } from "./appState";
+import { AppState, appState } from "./appState";
 
-export function configureStore(): Store {
+export function configureStore(): Store<AppState> {
   const composeEnhancers = composeWithDevTools({});
 
   return createStore(

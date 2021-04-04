@@ -1,13 +1,37 @@
 import React from "react";
+import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
+import { AppState } from "../redux/appState";
 import "./App.css";
 import LoginPage from "./login/LoginPage";
 
-function App() {
+interface AppProps {
+  isAuthenticated: boolean;
+}
+
+function App({ isAuthenticated }: AppProps) {
   return (
     <div className="App">
-      <LoginPage />
+      {isAuthenticated ? (
+        <Switch>{/* Components go here */}</Switch>
+      ) : (
+        <Switch>
+          <Route component={LoginPage} />
+        </Switch>
+      )}
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state: AppState) => {
+  console.log(state);
+  return {
+    isAuthenticated: state.userToken.token.length !== 0,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
