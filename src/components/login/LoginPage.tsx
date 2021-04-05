@@ -15,6 +15,7 @@ import React, {
   FormEvent,
   useState,
 } from "react";
+import { SIGNUP_PAGE } from "../../routes";
 
 interface LoginPageProps {
   apiCallsInProgress: boolean;
@@ -113,7 +114,7 @@ const LoginPage = ({
 
           <div className="login-page-signup-div">
             <span>
-              No account yet?<a href="https://google.com"> Sign up</a> now!
+              No account yet?<a href={SIGNUP_PAGE}> Sign up</a> now!
             </span>
           </div>
         </Card.Body>
