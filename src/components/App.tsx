@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import { AppState } from "../redux/appState";
 import "./App.css";
 import LoginPage from "./login/LoginPage";
+import MainPage from "./main/MainPage";
 import SignupPage from "./signup/SignupPage";
 
 interface AppProps {
@@ -14,7 +15,9 @@ function App({ isAuthenticated }: AppProps) {
   return (
     <div className="App">
       {isAuthenticated ? (
-        <Switch>{/* Components go here */}</Switch>
+        <Switch>
+          <Route component={MainPage} />
+        </Switch>
       ) : (
         <Switch>
           <Route exact path="/signup" component={SignupPage} />
@@ -26,7 +29,6 @@ function App({ isAuthenticated }: AppProps) {
 }
 
 const mapStateToProps = (state: AppState) => {
-  console.log(state);
   return {
     isAuthenticated: state.userToken.token.length !== 0,
   };

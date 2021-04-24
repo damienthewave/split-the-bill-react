@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://localhost:8443";
 
-export const SIGNUP_URL = BASE_URL + "/signup";
-export const LOGIN_URL = BASE_URL + "/signin";
+export const SIGNUP_URL = BASE_URL + "/auth/signup";
+export const LOGIN_URL = BASE_URL + "/auth/signin";

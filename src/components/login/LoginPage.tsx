@@ -1,4 +1,4 @@
-import { Button, Card, Form, Image } from "react-bootstrap";
+import { Button, Card, Form, Image, Alert } from "react-bootstrap";
 import { connect } from "react-redux";
 import { LoginDto } from "../../api/login/loginDtos";
 import { UserTokenDto } from "../../api/login/userTokenDto";
@@ -9,13 +9,12 @@ import {
   FacebookLoginButton,
 } from "react-social-login-buttons";
 import "./LoginPage.css";
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  FormEvent,
-  useState,
-} from "react";
 import { SIGNUP_PAGE } from "../../routes";
+import { Redirect } from "react-router-dom";
+import * as yup from "yup";
+import { Formik, FormikHelpers } from "formik";
+import ApiCallError from "../../api/apiCallError";
+import React, { useState } from "react";
 
 interface LoginPageProps {
   apiCallsInProgress: boolean;
@@ -24,26 +23,53 @@ interface LoginPageProps {
   login: (loginDto: LoginDto) => Promise<void>;
 }
 
-const LoginPage = ({
-  apiCallsInProgress,
-  userToken,
-  login,
-}: LoginPageProps) => {
-  const [credentials, setCredentials] = useState<LoginDto>({
-    username: "",
-    password: "",
-  });
+const loginFormValidation = yup.object().shape({
+  username: yup
+    .string()
+    .required("Required!")
+    .matches(
+      /^[a-z0-9]{4,15}$/,
+      "Should contain only lowercase letters or numbers and be 4-15 characters long."
+    ),
+  password: yup
+    .string()
+    .required("Required!")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+      "Should be minimum eight characters, at least one letter and one number"
+    ),
+});
 
-  const setCredentialsProperty = (property: string, value: string) => {
-    setCredentials({
-      ...credentials,
-      [property]: value,
-    });
-  };
+interface LoginFormProps {
+  username: string;
+  password: string;
+}
 
-  const onBasicLogin = (event: FormEvent) => {
-    event.preventDefault();
-    alert(credentials.username + ", " + credentials.password);
+const LoginPage = ({ userToken, login }: LoginPageProps) => {
+  const [loginError, setLoginError] = useState<string>("");
+
+  if (userToken.token) {
+    return <Redirect to="/" />;
+  }
+
+  const onLoginFormSubmit = (
+    values: LoginFormProps,
+    formikHelpers: FormikHelpers<LoginFormProps>
+  ) => {
+    setLoginError("");
+    formikHelpers.setSubmitting(true);
+
+    const loginDto: LoginDto = {
+      username: values.username,
+      password: values.password,
+    };
+
+    login(loginDto)
+      .then(() => formikHelpers.setSubmitting(false))
+      .catch((e: ApiCallError) => {
+        setLoginError(e.message);
+        formikHelpers.setSubmitting(false);
+      });
   };
 
   const onGoogleLogin = () => {
@@ -54,6 +80,11 @@ const LoginPage = ({
     alert("Facebook login!");
   };
 
+  const initialFormValues: LoginFormProps = {
+    username: "",
+    password: "",
+  };
+
   return (
     <div className="login-page">
       <Card className="login-form" bg="light" border="success">
@@ -62,34 +93,73 @@ const LoginPage = ({
           <span className="login-page-title">Split The Bill</span>
         </Card.Title>
         <Card.Body>
-          <Form onSubmit={onBasicLogin}>
-            <Form.Control
-              value={credentials.username}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setCredentialsProperty("username", e.currentTarget.value)
-              }
-              className="login-page-form-input"
-              placeholder="Username"
-            />
+          <Alert show={loginError !== ""} variant={"danger"}>
+            {loginError}
+          </Alert>
+          <Formik
+            onSubmit={onLoginFormSubmit}
+            initialValues={initialFormValues}
+            validationSchema={loginFormValidation}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
+                <Form.Group>
+                  <Form.Control
+                    className="login-page-form-input"
+                    placeholder="Username"
+                    name="username"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.username}
+                    isInvalid={touched.username && !!errors.username}
+                    isValid={touched.username && !errors.username}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.username}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-            <Form.Control
-              value={credentials.password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setCredentialsProperty("password", e.currentTarget.value)
-              }
-              className="login-page-form-input"
-              type="password"
-              placeholder="Password"
-            />
+                <Form.Group>
+                  <Form.Control
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    name="password"
+                    className="login-page-form-input"
+                    type="password"
+                    placeholder="Password"
+                    isInvalid={touched.password && !!errors.password}
+                    isValid={touched.password && !errors.password}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-            <Button
-              className="login-page-login-button"
-              variant="success"
-              type="submit"
-            >
-              Login
-            </Button>
-          </Form>
+                <Button
+                  className="login-page-login-button"
+                  variant="success"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  Login
+                </Button>
+              </Form>
+            )}
+          </Formik>
 
           <div className="login-page-social-div">
             <GoogleLoginButton
@@ -125,7 +195,6 @@ const LoginPage = ({
 
 const mapStateToProps = (state: AppState) => {
   return {
-    apiCallsInProgress: state.apiCallsInProgress > 0,
     userToken: state.userToken,
   };
 };
