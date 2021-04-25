@@ -1,20 +1,15 @@
-import { Button, Card, Form, Image, Alert } from "react-bootstrap";
+import { Alert, Button, Card, Form, Image } from "react-bootstrap";
 import { connect } from "react-redux";
 import { LoginDto } from "../../api/login/loginDtos";
 import { UserTokenDto } from "../../api/login/userTokenDto";
 import { AppState } from "../../redux/appState";
-import { login } from "../../redux/login/loginActions";
-import {
-  GoogleLoginButton,
-  FacebookLoginButton,
-} from "react-social-login-buttons";
+import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import "./LoginPage.css";
 import { SIGNUP_PAGE } from "../../routes";
 import { Redirect } from "react-router-dom";
-import * as yup from "yup";
-import { Formik, FormikHelpers } from "formik";
 import ApiCallError from "../../api/apiCallError";
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { login } from "../../redux/login/loginActions";
 
 interface LoginPageProps {
   apiCallsInProgress: boolean;
@@ -23,52 +18,39 @@ interface LoginPageProps {
   login: (loginDto: LoginDto) => Promise<void>;
 }
 
-const loginFormValidation = yup.object().shape({
-  username: yup
-    .string()
-    .required("Required!")
-    .matches(
-      /^[a-z0-9]{4,15}$/,
-      "Should contain only lowercase letters or numbers and be 4-15 characters long."
-    ),
-  password: yup
-    .string()
-    .required("Required!")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-      "Should be minimum eight characters, at least one letter and one number"
-    ),
-});
-
 interface LoginFormProps {
   username: string;
   password: string;
 }
 
-const LoginPage = ({ userToken, login }: LoginPageProps) => {
+const LoginPage = ({ userToken, apiCallsInProgress, login }: LoginPageProps) => {
+
   const [loginError, setLoginError] = useState<string>("");
+  const [loginCredentials, setLoginCredentials] = useState<LoginFormProps>({
+    username: "",
+    password: ""
+  });
 
   if (userToken.token) {
     return <Redirect to="/" />;
   }
 
+  const setLoginCredentialsProperty = (property: string, value: string) => {
+    setLoginCredentials({
+      ...loginCredentials,
+      [property]: value
+    });
+  };
+
   const onLoginFormSubmit = (
-    values: LoginFormProps,
-    formikHelpers: FormikHelpers<LoginFormProps>
+    event: FormEvent
   ) => {
+    event.preventDefault();
     setLoginError("");
-    formikHelpers.setSubmitting(true);
 
-    const loginDto: LoginDto = {
-      username: values.username,
-      password: values.password,
-    };
-
-    login(loginDto)
-      .then(() => formikHelpers.setSubmitting(false))
+    login(loginCredentials)
       .catch((e: ApiCallError) => {
         setLoginError(e.message);
-        formikHelpers.setSubmitting(false);
       });
   };
 
@@ -78,11 +60,6 @@ const LoginPage = ({ userToken, login }: LoginPageProps) => {
 
   const onFacebookLogin = () => {
     alert("Facebook login!");
-  };
-
-  const initialFormValues: LoginFormProps = {
-    username: "",
-    password: "",
   };
 
   return (
@@ -96,70 +73,39 @@ const LoginPage = ({ userToken, login }: LoginPageProps) => {
           <Alert show={loginError !== ""} variant={"danger"}>
             {loginError}
           </Alert>
-          <Formik
+          <Form
             onSubmit={onLoginFormSubmit}
-            initialValues={initialFormValues}
-            validationSchema={loginFormValidation}
           >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-            }) => (
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSubmit();
-                }}
-              >
-                <Form.Group>
-                  <Form.Control
-                    className="login-page-form-input"
-                    placeholder="Username"
-                    name="username"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.username}
-                    isInvalid={touched.username && !!errors.username}
-                    isValid={touched.username && !errors.username}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.username}
-                  </Form.Control.Feedback>
-                </Form.Group>
+            <Form.Control
+              className="login-page-form-input"
+              placeholder="Username"
+              name="username"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setLoginCredentialsProperty("username", e.currentTarget.value)
+              }
+              value={loginCredentials.username}
+            />
 
-                <Form.Group>
-                  <Form.Control
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.password}
-                    name="password"
-                    className="login-page-form-input"
-                    type="password"
-                    placeholder="Password"
-                    isInvalid={touched.password && !!errors.password}
-                    isValid={touched.password && !errors.password}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
-                  </Form.Control.Feedback>
-                </Form.Group>
+            <Form.Control
+              value={loginCredentials.password}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setLoginCredentialsProperty("password", e.currentTarget.value)
+              }
+              name="password"
+              className="login-page-form-input"
+              type="password"
+              placeholder="Password"
+            />
 
-                <Button
-                  className="login-page-login-button"
-                  variant="success"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Login
-                </Button>
-              </Form>
-            )}
-          </Formik>
+            <Button
+              className="login-page-login-button"
+              variant="success"
+              type="submit"
+              disabled={apiCallsInProgress}
+            >
+              Login
+            </Button>
+          </Form>
 
           <div className="login-page-social-div">
             <GoogleLoginButton
@@ -195,13 +141,14 @@ const LoginPage = ({ userToken, login }: LoginPageProps) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    userToken: state.userToken,
+    apiCallsInProgress: state.apiCallsInProgress > 0,
+    userToken: state.userToken
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    login: (loginDto: LoginDto) => dispatch(login(loginDto)),
+    login: (loginDto: LoginDto) => dispatch(login(loginDto))
   };
 };
 
