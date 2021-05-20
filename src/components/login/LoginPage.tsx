@@ -5,11 +5,12 @@ import { UserTokenDto } from "../../api/login/userTokenDto";
 import { AppState } from "../../redux/appState";
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import "./LoginPage.css";
-import { SIGNUP_PAGE } from "../../routes";
-import { Redirect } from "react-router-dom";
+import { CREATE_PERSON_PAGE_SUFFIX, SIGNUP_PAGE } from "../../routes";
 import ApiCallError from "../../api/apiCallError";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { login } from "../../redux/login/loginActions";
+import { RouteComponentProps } from "react-router";
+import { Redirect } from "react-router-dom";
 
 interface LoginPageProps {
   apiCallsInProgress: boolean;
@@ -23,7 +24,7 @@ interface LoginFormProps {
   password: string;
 }
 
-const LoginPage = ({ userToken, apiCallsInProgress, login }: LoginPageProps) => {
+const LoginPage: React.FunctionComponent<LoginPageProps & RouteComponentProps> = ({ userToken, apiCallsInProgress, login, ...props }) => {
 
   const [loginError, setLoginError] = useState<string>("");
   const [loginCredentials, setLoginCredentials] = useState<LoginFormProps>({
@@ -32,7 +33,7 @@ const LoginPage = ({ userToken, apiCallsInProgress, login }: LoginPageProps) => 
   });
 
   if (userToken.token) {
-    return <Redirect to="/" />;
+    return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />
   }
 
   const setLoginCredentialsProperty = (property: string, value: string) => {
@@ -146,10 +147,8 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    login: (loginDto: LoginDto) => dispatch(login(loginDto))
-  };
+const mapDispatchToProps = {
+  login
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

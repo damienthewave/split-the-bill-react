@@ -1,41 +1,42 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import { AppState } from "../redux/appState";
+import { Route, Switch } from "react-router";
 import "./App.css";
 import LoginPage from "./login/LoginPage";
 import MainPage from "./main/MainPage";
 import SignupPage from "./signup/SignupPage";
+import { ToastContainer } from "react-toastify";
+import CreatePersonPage from "./person/CreatePersonPage";
+import { CREATE_PERSON_PAGE_SUFFIX, LOGIN_PAGE_SUFFIX, SIGNUP_PAGE_SUFFIX } from "../routes";
+import ProtectedRoute from "./common/ProtectedRoute";
 
-interface AppProps {
-  isAuthenticated: boolean;
-}
-
-function App({ isAuthenticated }: AppProps) {
+function App() {
   return (
     <div className="App">
-      {isAuthenticated ? (
-        <Switch>
-          <Route component={MainPage} />
-        </Switch>
-      ) : (
-        <Switch>
-          <Route exact path="/signup" component={SignupPage} />
-          <Route component={LoginPage} />
-        </Switch>
-      )}
+      <Switch>
+        <Route exact path={SIGNUP_PAGE_SUFFIX} component={SignupPage} />
+        <Route exact path={LOGIN_PAGE_SUFFIX} component={LoginPage} />
+
+        <ProtectedRoute path={CREATE_PERSON_PAGE_SUFFIX}>
+          <Route exact path={CREATE_PERSON_PAGE_SUFFIX} component={CreatePersonPage} />
+        </ProtectedRoute>
+        <ProtectedRoute path='/'>
+          <MainPage />
+        </ProtectedRoute>
+      </Switch>
+      {/*{isAuthenticated ? (*/}
+      {/*  <Switch>*/}
+      {/*    <Route path={CREATE_PERSON_PAGE} component={CreatePersonPage} />*/}
+      {/*    /!*<Route path="/main" component={MainPage} />*!/*/}
+      {/*  </Switch>*/}
+      {/*) : (*/}
+      {/*  <Switch>*/}
+      {/*    <Route exact path="/signup" component={SignupPage} />*/}
+      {/*    <Route component={LoginPage} />*/}
+      {/*  </Switch>*/}
+      {/*)}*/}
+      <ToastContainer />
     </div>
   );
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    isAuthenticated: state.userToken.token.length !== 0,
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

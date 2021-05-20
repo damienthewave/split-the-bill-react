@@ -1,0 +1,16 @@
+.cpp-wrapper {
+    height: 100vh;
+    background-color: hsl(0, 0%, 90%);
+}
+
+.cpp-form {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 95%;
+    max-width: 500px;
+    margin: auto;
+    padding: 1vw;
+}

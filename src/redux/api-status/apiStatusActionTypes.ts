@@ -1,3 +1,8 @@
+import { SignupActionType } from "../signup/signupActionTypes";
+import { LoginActionType } from "../login/loginActionTypes";
+import { PersonActionType } from "../person/personActionTypes";
+import { CurrencyActionType } from "../currency/currencyActionTypes";
+
 export const BEGIN_API_CALL = "BEGIN_API_CALL";
 export const API_CALL_ERROR = "API_CALL_ERROR";
 
@@ -13,4 +18,4 @@ interface ApiCallError {
 export type ApiStatusActionType = BeginApiCallAction | ApiCallError;
 
 //Add | type for any other action type
-export type ActionType = ApiStatusActionType;
+export type ActionType = ApiStatusActionType | SignupActionType | LoginActionType | PersonActionType | CurrencyActionType;

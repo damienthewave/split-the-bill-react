@@ -4,8 +4,8 @@ import { apiCallError, beginApiCall } from "../api-status/apiStatusActions";
 import { SignupActionType, SIGNUP_SUCCESS } from "./signupActionTypes";
 import * as signupApi from "../../api/signup/signupApi";
 
-function signupSuccess(userToken: UserTokenDto): SignupActionType {
-  return { type: SIGNUP_SUCCESS, userToken };
+function signupSuccess(userToken: UserTokenDto | void): SignupActionType {
+  return { type: SIGNUP_SUCCESS, userToken } as SignupActionType;
 }
 
 export function signup(signupDto: SignupDto) {
@@ -13,7 +13,7 @@ export function signup(signupDto: SignupDto) {
     dispatch(beginApiCall());
     return signupApi
       .signup(signupDto)
-      .then((token: UserTokenDto) => dispatch(signupSuccess(token)))
+      .then((token: UserTokenDto | void) => dispatch(signupSuccess(token)))
       .catch((error) => {
         dispatch(apiCallError(error));
         throw error;

@@ -1,12 +1,8 @@
-import {
-  ActionType,
-  API_CALL_ERROR,
-  BEGIN_API_CALL,
-} from "./apiStatusActionTypes";
+import { ActionType, API_CALL_ERROR, BEGIN_API_CALL } from "./apiStatusActionTypes";
 import { appState } from "../appState";
 
 function actionTypeEndsWithSuccess(type: string) {
-  return type.substring(type.length - 8) === "_SUCCESS";
+  return type.endsWith("_SUCCESS");
 }
 
 export function apiStatusReducer(
@@ -16,9 +12,11 @@ export function apiStatusReducer(
   switch (action.type) {
     case BEGIN_API_CALL:
       return state + 1;
-    case API_CALL_ERROR || actionTypeEndsWithSuccess(action.type):
+    case API_CALL_ERROR:
       return state - 1;
     default:
-      return state;
+      return actionTypeEndsWithSuccess(action.type)
+        ? state - 1
+        : state;
   }
 }

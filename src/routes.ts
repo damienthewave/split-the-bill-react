@@ -5,3 +5,6 @@ export const LOGIN_PAGE = APP_BASE_URL + LOGIN_PAGE_SUFFIX;
 
 export const SIGNUP_PAGE_SUFFIX = "/signup";
 export const SIGNUP_PAGE = APP_BASE_URL + SIGNUP_PAGE_SUFFIX;
+
+export const CREATE_PERSON_PAGE_SUFFIX = "/createPerson";
+export const CREATE_PERSON_PAGE = APP_BASE_URL + CREATE_PERSON_PAGE_SUFFIX;

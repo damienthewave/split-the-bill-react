@@ -1,7 +1,8 @@
 import { SignupDto } from "./signupDtos";
 import { SIGNUP_URL } from "../apiUrls";
 import axios from "axios";
-import { handleError } from "../apiUtils";
+import { handleError, registerUserToken } from "../apiUtils";
+import { UserTokenDto } from "../login/userTokenDto";
 
 export function signup(signupDto: SignupDto) {
   return axios
@@ -12,6 +13,10 @@ export function signup(signupDto: SignupDto) {
         Accept: "application/json"
       }
     })
-    .then((response) => response.data)
+    .then((response) => {
+      const userToken : UserTokenDto = response.data;
+      registerUserToken(userToken)
+      return userToken
+    })
     .catch(handleError);
 }
