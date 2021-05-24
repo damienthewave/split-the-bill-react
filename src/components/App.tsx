@@ -4,12 +4,15 @@ import "./App.css";
 import LoginPage from "./login/LoginPage";
 import MainPage from "./main/MainPage";
 import SignupPage from "./signup/SignupPage";
+import GroupPage from "./group/GroupPage";
+import GroupDetails from "./group/GroupDetails";
 import { ToastContainer } from "react-toastify";
 import CreatePersonPage from "./person/CreatePersonPage";
 import {
   CREATE_PERSON_PAGE_SUFFIX,
   LOGIN_PAGE_SUFFIX,
   SIGNUP_PAGE_SUFFIX,
+  GROUPS_PAGE_SUFFIX 
 } from "../routes";
 import ProtectedRoute from "./common/ProtectedRoute";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +30,10 @@ function App() {
             path={CREATE_PERSON_PAGE_SUFFIX}
             component={CreatePersonPage}
           />
+        </ProtectedRoute>
+        <ProtectedRoute path={GROUPS_PAGE_SUFFIX}>
+          <Route exact path={GROUPS_PAGE_SUFFIX+"/:id"} component={GroupDetails} />
+          <Route exact path={GROUPS_PAGE_SUFFIX} component={GroupPage} />
         </ProtectedRoute>
         <ProtectedRoute path="/">
           <MainPage />

@@ -8,3 +8,6 @@ export const SIGNUP_PAGE = APP_BASE_URL + SIGNUP_PAGE_SUFFIX;
 
 export const CREATE_PERSON_PAGE_SUFFIX = "/createPerson";
 export const CREATE_PERSON_PAGE = APP_BASE_URL + CREATE_PERSON_PAGE_SUFFIX;
+
+export const GROUPS_PAGE_SUFFIX = "/groups";
+export const GROUPS_PAGE = APP_BASE_URL + GROUPS_PAGE_SUFFIX;

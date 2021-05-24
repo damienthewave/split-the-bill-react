@@ -8,6 +8,7 @@ import {
   CurrencyReadDto,
   emptyCurrencyCollection,
 } from "../api/currency/currencyDtos";
+import { GroupReadDto, emptyGroupCollection } from "../api/group/groupDtos";
 
 export const appState: AppState = {
   apiCallsInProgress: 0,
@@ -15,6 +16,7 @@ export const appState: AppState = {
   person: emptyPersonReadDto,
   currencies: emptyCurrencyCollection,
   friendships: emptyFriendships,
+  groups: emptyGroupCollection
 };
 
 export interface AppState {
@@ -23,4 +25,5 @@ export interface AppState {
   person: PersonReadDto;
   currencies: CurrencyReadDto[];
   friendships: Friendships;
+  groups: GroupReadDto[];
 }
