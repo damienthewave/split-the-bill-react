@@ -6,8 +6,14 @@ import MainPage from "./main/MainPage";
 import SignupPage from "./signup/SignupPage";
 import { ToastContainer } from "react-toastify";
 import CreatePersonPage from "./person/CreatePersonPage";
-import { CREATE_PERSON_PAGE_SUFFIX, LOGIN_PAGE_SUFFIX, SIGNUP_PAGE_SUFFIX } from "../routes";
+import {
+  CREATE_PERSON_PAGE_SUFFIX,
+  LOGIN_PAGE_SUFFIX,
+  SIGNUP_PAGE_SUFFIX,
+} from "../routes";
 import ProtectedRoute from "./common/ProtectedRoute";
+import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinnerContainer from "./common/loading-spinner/LoadingSpinnerContainer";
 
 function App() {
   return (
@@ -15,11 +21,14 @@ function App() {
       <Switch>
         <Route exact path={SIGNUP_PAGE_SUFFIX} component={SignupPage} />
         <Route exact path={LOGIN_PAGE_SUFFIX} component={LoginPage} />
-
         <ProtectedRoute path={CREATE_PERSON_PAGE_SUFFIX}>
-          <Route exact path={CREATE_PERSON_PAGE_SUFFIX} component={CreatePersonPage} />
+          <Route
+            exact
+            path={CREATE_PERSON_PAGE_SUFFIX}
+            component={CreatePersonPage}
+          />
         </ProtectedRoute>
-        <ProtectedRoute path='/'>
+        <ProtectedRoute path="/">
           <MainPage />
         </ProtectedRoute>
       </Switch>
@@ -34,6 +43,7 @@ function App() {
       {/*    <Route component={LoginPage} />*/}
       {/*  </Switch>*/}
       {/*)}*/}
+      <LoadingSpinnerContainer />
       <ToastContainer />
     </div>
   );
