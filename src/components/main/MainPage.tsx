@@ -6,8 +6,8 @@ import { getPerson } from "../../redux/person/personActions";
 import ApiCallError, { NoPersonAssignedError } from "../../api/apiCallError";
 import { Redirect } from "react-router";
 import { CREATE_PERSON_PAGE_SUFFIX } from "../../routes";
-import MainNavbar from "../common/MainNavbar";
-import FriendshipPanel from "./FriendshipPanel";
+import FriendshipPanel from "./friendship/FriendshipPanel";
+import GroupPanel from "./GroupPanel";
 
 interface MainPageProps {
   person: PersonReadDto;
@@ -27,37 +27,19 @@ const MainPage: React.FC<MainPageProps> = ({ person, getPerson }) => {
     return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />;
   }
 
-  const personDetails = (
-    <div className="row justify-content-center">
-      <div className="col-1">
-        <img
-          width={60}
-          height={60}
-          className="rounded-circle"
-          src="https://images-na.ssl-images-amazon.com/images/I/812SAGw9yvL._AC_SX679_.jpg"
-        />
-      </div>
-      <div className="col-4">
-        <span>{person.name}</span>
-      </div>
-    </div>
-  );
-
-  const groupsPane = <h4 className="text-left">Groups</h4>;
-
   return (
     <div>
-      <MainNavbar />
-      <div className="container mt-3">
+      <div className="mx-5 px-5 mt-3">
         <div className="row">
-          <div className="col">
-            <div className="border rounded">
-              <div className="p-2">{personDetails}</div>
-              <div className="p-2">{groupsPane}</div>
+          <div className="col-8">
+            <div className="border rounded border-success bg-light">
+              <div className="p-2">
+                <GroupPanel />
+              </div>
             </div>
           </div>
-          <div className="col">
-            <div className="border rounded">
+          <div className="col-4">
+            <div className="border rounded border-success bg-light">
               <div className="p-2">
                 <FriendshipPanel />
               </div>

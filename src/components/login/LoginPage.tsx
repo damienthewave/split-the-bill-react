@@ -3,7 +3,10 @@ import { connect } from "react-redux";
 import { LoginDto } from "../../api/login/loginDtos";
 import { UserTokenDto } from "../../api/login/userTokenDto";
 import { AppState } from "../../redux/appState";
-import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
 import "./LoginPage.css";
 import { CREATE_PERSON_PAGE_SUFFIX, SIGNUP_PAGE } from "../../routes";
 import ApiCallError from "../../api/apiCallError";
@@ -13,9 +16,7 @@ import { RouteComponentProps } from "react-router";
 import { Redirect } from "react-router-dom";
 
 interface LoginPageProps {
-  apiCallsInProgress: boolean;
   userToken: UserTokenDto;
-
   login: (loginDto: LoginDto) => Promise<void>;
 }
 
@@ -24,35 +25,33 @@ interface LoginFormProps {
   password: string;
 }
 
-const LoginPage: React.FunctionComponent<LoginPageProps & RouteComponentProps> = ({ userToken, apiCallsInProgress, login, ...props }) => {
-
+const LoginPage: React.FunctionComponent<
+  LoginPageProps & RouteComponentProps
+> = ({ userToken, login }) => {
   const [loginError, setLoginError] = useState<string>("");
   const [loginCredentials, setLoginCredentials] = useState<LoginFormProps>({
     username: "",
-    password: ""
+    password: "",
   });
 
   if (userToken.token) {
-    return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />
+    return <Redirect to={"/"} />;
   }
 
   const setLoginCredentialsProperty = (property: string, value: string) => {
     setLoginCredentials({
       ...loginCredentials,
-      [property]: value
+      [property]: value,
     });
   };
 
-  const onLoginFormSubmit = (
-    event: FormEvent
-  ) => {
+  const onLoginFormSubmit = (event: FormEvent) => {
     event.preventDefault();
     setLoginError("");
 
-    login(loginCredentials)
-      .catch((e: ApiCallError) => {
-        setLoginError(e.message);
-      });
+    login(loginCredentials).catch((e: ApiCallError) => {
+      setLoginError(e.message);
+    });
   };
 
   const onGoogleLogin = () => {
@@ -74,9 +73,7 @@ const LoginPage: React.FunctionComponent<LoginPageProps & RouteComponentProps> =
           <Alert show={loginError !== ""} variant={"danger"}>
             {loginError}
           </Alert>
-          <Form
-            onSubmit={onLoginFormSubmit}
-          >
+          <Form onSubmit={onLoginFormSubmit}>
             <Form.Control
               className="login-page-form-input"
               placeholder="Username"
@@ -102,7 +99,6 @@ const LoginPage: React.FunctionComponent<LoginPageProps & RouteComponentProps> =
               className="login-page-login-button"
               variant="success"
               type="submit"
-              disabled={apiCallsInProgress}
             >
               Login
             </Button>
@@ -142,13 +138,12 @@ const LoginPage: React.FunctionComponent<LoginPageProps & RouteComponentProps> =
 
 const mapStateToProps = (state: AppState) => {
   return {
-    apiCallsInProgress: state.apiCallsInProgress > 0,
-    userToken: state.userToken
+    userToken: state.userToken,
   };
 };
 
 const mapDispatchToProps = {
-  login
+  login,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

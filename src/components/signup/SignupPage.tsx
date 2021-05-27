@@ -1,6 +1,6 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { useState } from "react";
 import { Alert, Button, Card, Form, Image } from "react-bootstrap";
-import { LOGIN_PAGE } from "../../routes";
+import { CREATE_PERSON_PAGE_SUFFIX, LOGIN_PAGE } from "../../routes";
 import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import "./SignupPage.css";
@@ -59,7 +59,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ userToken, signup }) => {
   const [signupError, setSignupError] = useState<string>("");
 
   if (userToken.token) {
-    return <Redirect to="/" />;
+    return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />;
   }
 
   const onSignupFormSubmit = (

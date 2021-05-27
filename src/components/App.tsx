@@ -32,17 +32,6 @@ function App() {
           <MainPage />
         </ProtectedRoute>
       </Switch>
-      {/*{isAuthenticated ? (*/}
-      {/*  <Switch>*/}
-      {/*    <Route path={CREATE_PERSON_PAGE} component={CreatePersonPage} />*/}
-      {/*    /!*<Route path="/main" component={MainPage} />*!/*/}
-      {/*  </Switch>*/}
-      {/*) : (*/}
-      {/*  <Switch>*/}
-      {/*    <Route exact path="/signup" component={SignupPage} />*/}
-      {/*    <Route component={LoginPage} />*/}
-      {/*  </Switch>*/}
-      {/*)}*/}
       <LoadingSpinnerContainer />
       <ToastContainer />
     </div>

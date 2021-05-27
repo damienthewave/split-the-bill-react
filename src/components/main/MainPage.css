@@ -1,3 +1,7 @@
 .bordered {
     border: 2px aquamarine;
 }
+
+.btn-round {
+    border-radius:30px !important
+}

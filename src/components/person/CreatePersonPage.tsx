@@ -18,10 +18,8 @@ import { Redirect } from "react-router";
 import "./CreatePersonPage.css";
 
 interface CreatePersonPageProps {
-  apiCallsInProgress: boolean;
   currencies: CurrencyReadDto[];
   person: PersonReadDto;
-
   loadCurrencies: () => Promise<void>;
   getPerson: () => Promise<void>;
   createPerson: (personCreateDto: PersonCreateDto) => Promise<void>;
@@ -33,7 +31,6 @@ interface CreatePersonFormProps {
 }
 
 const CreatePersonPage: React.FC<CreatePersonPageProps> = ({
-  apiCallsInProgress,
   person,
   currencies,
   loadCurrencies,
@@ -88,94 +85,86 @@ const CreatePersonPage: React.FC<CreatePersonPageProps> = ({
 
   return (
     <div className="cpp-wrapper">
-      <Card className="cpp-form">
+      <Card className="cpp-form border border-success">
         <Card.Title>
           <span className="cpp-form-title">Create Person</span>
         </Card.Title>
-
         <Card.Body>
           <Alert show={currencyApiErrorMsg.length !== 0} variant={"danger"}>
             {currencyApiErrorMsg}
           </Alert>
+          <Formik
+            onSubmit={onCreatePersonFormSubmit}
+            initialValues={initialFormValue}
+            validationSchema={createPersonFormValidation}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <Form
+                noValidate
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
+                <Form.Group>
+                  <Form.Control
+                    className="cpp-form-name"
+                    placeholder="Name"
+                    name="name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                    isInvalid={touched.name && !!errors.name}
+                    isValid={touched.name && !errors.name}
+                    disabled={currencyApiErrorMsg.length !== 0}
+                  />
+                  <Form.Control.Feedback type={"invalid"}>
+                    {errors.name}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-          {apiCallsInProgress ? (
-            <Spinner animation={"border"} variant={"success"} />
-          ) : (
-            <Formik
-              onSubmit={onCreatePersonFormSubmit}
-              initialValues={initialFormValue}
-              validationSchema={createPersonFormValidation}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <Form
-                  noValidate
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                  }}
-                >
-                  <Form.Group>
-                    <Form.Control
-                      className="cpp-form-name"
-                      placeholder="Name"
-                      name="name"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.name}
-                      isInvalid={touched.name && !!errors.name}
-                      isValid={touched.name && !errors.name}
-                      disabled={currencyApiErrorMsg.length !== 0}
-                    />
-                    <Form.Control.Feedback type={"invalid"}>
-                      {errors.name}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Form.Group>
-                    <Form.Control
-                      as="select"
-                      className="cpp-form-currency"
-                      placeholder="Preferred currency"
-                      name="currency"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.currency}
-                      isInvalid={touched.currency && !!errors.currency}
-                      isValid={touched.currency && !errors.currency}
-                      disabled={currencyApiErrorMsg.length !== 0}
-                    >
-                      <option key={0}>Preferred currency</option>
-                      {currencies.map((currency) => (
-                        <option key={currency.id}>
-                          {currency.abbreviation}
-                        </option>
-                      ))}
-                    </Form.Control>
-                    <Form.Control.Feedback type={"invalid"}>
-                      {errors.currency}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Button
-                    className="signup-page-signup-button"
-                    variant="success"
-                    type="submit"
-                    disabled={isSubmitting || currencyApiErrorMsg.length !== 0}
+                <Form.Group>
+                  <Form.Control
+                    as="select"
+                    className="cpp-form-currency"
+                    placeholder="Preferred currency"
+                    name="currency"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.currency}
+                    isInvalid={touched.currency && !!errors.currency}
+                    isValid={touched.currency && !errors.currency}
+                    disabled={currencyApiErrorMsg.length !== 0}
                   >
-                    Submit
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-          )}
+                    <option key={0}>Preferred currency</option>
+                    {currencies.map((currency) => (
+                      <option key={currency.id}>{currency.abbreviation}</option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type={"invalid"}>
+                    {errors.currency}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Button
+                  className="signup-page-signup-button"
+                  variant="success"
+                  type="submit"
+                  disabled={isSubmitting || currencyApiErrorMsg.length !== 0}
+                >
+                  Submit
+                </Button>
+              </Form>
+            )}
+          </Formik>
         </Card.Body>
       </Card>
     </div>
@@ -185,7 +174,6 @@ const CreatePersonPage: React.FC<CreatePersonPageProps> = ({
 const mapStateToProps = (state: AppState) => {
   return {
     person: state.person,
-    apiCallsInProgress: state.apiCallsInProgress > 0,
     currencies: state.currencies,
   };
 };
