@@ -1,16 +1,16 @@
 import { connect } from "react-redux";
-import { UserTokenDto } from "../../api/login/userTokenDto";
-import { AppState } from "../../redux/appState";
-import { GroupReadDto } from "../../api/group/groupDtos";
+import { UserTokenDto } from "../../../api/login/userTokenDto";
+import { AppState } from "../../../redux/appState";
+import { GroupReadDto } from "../../../api/group/groupDtos";
 import React, { useEffect, useState } from "react";
-import { loadGroups } from "../../redux/group/groupActions";
-import ApiCallError, { NoPersonAssignedError } from "../../api/apiCallError";
+import { loadGroups } from "../../../redux/group/groupActions";
+import ApiCallError, { NoPersonAssignedError } from "../../../api/apiCallError";
 import { Redirect } from "react-router";
-import { CREATE_PERSON_PAGE_SUFFIX } from "../../routes";
+import { CREATE_PERSON_PAGE_SUFFIX } from "../../../routes";
 import GroupList from "./GroupList"
 import { Spinner } from "react-bootstrap";
-import "./Groups.css"
-import { skipPartiallyEmittedExpressions } from "typescript";
+
+
 
 interface GroupPageProps {
   userToken: UserTokenDto;
@@ -24,7 +24,7 @@ const GroupPage: React.FC<GroupPageProps> = ({ groups, loadGroups }) => {
 
   const [noPersonAssigned, setNoPersonAssigned] = useState<boolean>(false);
   const [apiCallsInProgress, setApiCalls] = useState<boolean>(true);
-
+  
   const sleep = (time: number) => {
   return new Promise((resolve) => setTimeout(resolve, time));
   }

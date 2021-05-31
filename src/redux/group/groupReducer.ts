@@ -1,5 +1,5 @@
 import { appState } from "../appState";
-import { GroupsActionType, LOAD_GROUPS_SUCCESS } from "./groupActionTypes";
+import { CREATE_GROUP_SUCCESS, GroupsActionType, LOAD_GROUPS_SUCCESS } from "./groupActionTypes";
 
 export function groupReducer(
   state: typeof appState.groups = appState.groups,
@@ -8,6 +8,8 @@ export function groupReducer(
   switch (action.type) {
     case LOAD_GROUPS_SUCCESS:
       return action.groups;
+    case CREATE_GROUP_SUCCESS:
+      return [...state, action.group]
     default:
       return state;
   }

@@ -1,14 +1,8 @@
-import { connect } from "react-redux";
-import { UserTokenDto } from "../../api/login/userTokenDto";
-import { AppState } from "../../redux/appState";
-import { emptyGroupCollection, EmptyGroupDetailDto, GroupDetailDto } from "../../api/group/groupDtos";
+import { EmptyGroupDetailDto, GroupDetailDto } from "../../api/group/groupDtos";
 import React, { useEffect, useState } from "react";
 import { loadGroupDetails } from "../../api/group/groupApi";
-import ApiCallError, { NoPersonAssignedError } from "../../api/apiCallError";
-import "./Groups.css"
-import { Redirect } from "react-router";
+import ApiCallError from "../../api/apiCallError";
 import { useHistory } from "react-router-dom"
-import { GROUPS_PAGE_SUFFIX } from "../../routes";
 
 
 

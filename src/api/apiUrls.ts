@@ -14,3 +14,5 @@ export const FRIENDSHIPS_ACCEPT_URL = (id: number) =>
 
 export const FRIENDSHIPS_BREAK_URL = (id: number) =>
   FRIENDSHIPS_URL + "/" + id + "/break";
+
+export const GROUPS_URL = BASE_URL + "/groups"

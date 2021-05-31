@@ -17,6 +17,11 @@ export interface GroupDetailDto{
 
 export const emptyGroupCollection: GroupReadDto[] = [];
 
+export interface GroupFormDto{
+  name: string,
+  membersIds: number[]
+}
+
 export const EmptyGroupDetailDto: GroupDetailDto = {
   id: 0,
   name: "",
