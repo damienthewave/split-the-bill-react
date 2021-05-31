@@ -1,11 +1,16 @@
 import React from "react";
 import { PersonReadDto } from "../../api/person/personDtos";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { logout } from "../../redux/login/loginActions";
+import { connect } from "react-redux";
 
 interface Props {
   person: PersonReadDto;
+  logout: () => void;
 }
 
-const MainNavbar = ({ person }: Props) => {
+const MainNavbar = ({ person, logout }: Props) => {
   const personDetails = (
     <div className="btn btn-dark">
       <div className="row py-2 rounded">
@@ -17,8 +22,11 @@ const MainNavbar = ({ person }: Props) => {
             src="https://cdn.icon-icons.com/icons2/1674/PNG/512/person_110935.png"
           />
         </div>
-        <div className="col-8 pl-0 m-auto text-white">
+        <div className="col-4 text-white text-center">
           <span>{person.name}</span>
+        </div>
+        <div className="col-4 mx-auto m-auto">
+          <FontAwesomeIcon icon={faSignOutAlt} onClick={logout}/>
         </div>
       </div>
     </div>
@@ -35,8 +43,13 @@ const MainNavbar = ({ person }: Props) => {
         </div>
       </div>
       <div className="px-2">{personDetails}</div>
+
     </div>
   );
 };
 
-export default MainNavbar;
+const mapDispatchToProps = {
+  logout
+}
+
+export default connect(() => {}, mapDispatchToProps)(MainNavbar);

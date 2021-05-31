@@ -8,6 +8,7 @@ import { Redirect } from "react-router";
 import { CREATE_PERSON_PAGE_SUFFIX } from "../../routes";
 import FriendshipPanel from "./friendship/FriendshipPanel";
 import GroupPanel from "./GroupPanel";
+import Cookies from "universal-cookie";
 
 interface MainPageProps {
   person: PersonReadDto;
@@ -26,6 +27,9 @@ const MainPage: React.FC<MainPageProps> = ({ person, getPerson }) => {
   if (noPersonAssigned) {
     return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />;
   }
+
+  const cookies = new Cookies()
+  console.log(cookies.get('token'))
 
   return (
     <div>

@@ -10,14 +10,15 @@ import {
 import "./LoginPage.css";
 import { CREATE_PERSON_PAGE_SUFFIX, SIGNUP_PAGE } from "../../routes";
 import ApiCallError from "../../api/apiCallError";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { login } from "../../redux/login/loginActions";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { login, loadCookieToken } from "../../redux/login/loginActions";
 import { RouteComponentProps } from "react-router";
 import { Redirect } from "react-router-dom";
 
 interface LoginPageProps {
   userToken: UserTokenDto;
   login: (loginDto: LoginDto) => Promise<void>;
+  loadCookieToken: () => void;
 }
 
 interface LoginFormProps {
@@ -27,12 +28,16 @@ interface LoginFormProps {
 
 const LoginPage: React.FunctionComponent<
   LoginPageProps & RouteComponentProps
-> = ({ userToken, login }) => {
+> = ({ userToken, login, loadCookieToken }) => {
   const [loginError, setLoginError] = useState<string>("");
   const [loginCredentials, setLoginCredentials] = useState<LoginFormProps>({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    loadCookieToken()
+  }, [])
 
   if (userToken.token) {
     return <Redirect to={"/"} />;
@@ -144,6 +149,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = {
   login,
+  loadCookieToken
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
