@@ -7,6 +7,7 @@ import SignupPage from "./signup/SignupPage";
 import { ToastContainer } from "react-toastify";
 import CreatePersonPage from "./person/CreatePersonPage";
 import {
+  ADD_EXPENSE_PAGE_SUFFIX,
   CREATE_PERSON_PAGE_SUFFIX,
   LOGIN_PAGE_SUFFIX,
   SIGNUP_PAGE_SUFFIX,
@@ -14,6 +15,7 @@ import {
 import ProtectedRoute from "./common/ProtectedRoute";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinnerContainer from "./common/loading-spinner/LoadingSpinnerContainer";
+import AddExpensePage from "./expense/AddExpensePage";
 
 function App() {
   return (
@@ -21,14 +23,13 @@ function App() {
       <Switch>
         <Route exact path={SIGNUP_PAGE_SUFFIX} component={SignupPage} />
         <Route exact path={LOGIN_PAGE_SUFFIX} component={LoginPage} />
-        <ProtectedRoute path={CREATE_PERSON_PAGE_SUFFIX}>
-          <Route
-            exact
-            path={CREATE_PERSON_PAGE_SUFFIX}
-            component={CreatePersonPage}
-          />
+        <ProtectedRoute exact path={CREATE_PERSON_PAGE_SUFFIX}>
+          <CreatePersonPage />
         </ProtectedRoute>
-        <ProtectedRoute path="/">
+        <ProtectedRoute exact path={ADD_EXPENSE_PAGE_SUFFIX}>
+          <AddExpensePage />
+        </ProtectedRoute>
+        <ProtectedRoute exact path="/">
           <MainPage />
         </ProtectedRoute>
       </Switch>

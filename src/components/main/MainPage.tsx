@@ -8,7 +8,6 @@ import { Redirect } from "react-router";
 import { CREATE_PERSON_PAGE_SUFFIX } from "../../routes";
 import FriendshipPanel from "./friendship/FriendshipPanel";
 import GroupPanel from "./GroupPanel";
-import Cookies from "universal-cookie";
 
 interface MainPageProps {
   person: PersonReadDto;
@@ -17,29 +16,35 @@ interface MainPageProps {
 
 const MainPage: React.FC<MainPageProps> = ({ person, getPerson }) => {
   const [noPersonAssigned, setNoPersonAssigned] = useState<boolean>(false);
+  const [isPersonLoading, setPersonLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getPerson().catch((e: ApiCallError) => {
-      if (e.equals(NoPersonAssignedError)) setNoPersonAssigned(true);
-    });
-  }, []);
+    getPerson()
+      .then(() => setPersonLoading(false))
+      .catch((e: ApiCallError) => {
+        if (e.equals(NoPersonAssignedError)) {
+          setNoPersonAssigned(true);
+          setPersonLoading(false);
+        }
+      });
+  }, [getPerson]);
 
-  if (noPersonAssigned) {
-    return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />;
-  }
-
-  return (
+  return isPersonLoading ? (
+    <></>
+  ) : noPersonAssigned ? (
+    <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />
+  ) : (
     <div>
       <div className="mx-5 px-5 mt-3">
         <div className="row">
-          <div className="col-8">
+          <div className="col-lg-8 my-2">
             <div className="border rounded border-success bg-light">
               <div className="p-2">
                 <GroupPanel />
               </div>
             </div>
           </div>
-          <div className="col-4">
+          <div className="col-lg-4 my-2 ">
             <div className="border rounded border-success bg-light">
               <div className="p-2">
                 <FriendshipPanel />

@@ -1,6 +1,11 @@
 import { appState } from "../appState";
 import { SIGNUP_SUCCESS, SignupActionType } from "../signup/signupActionTypes";
-import { LOAD_COOKIE_TOKEN, LOGIN_SUCCESS, LoginActionType, LOGOUT } from "./loginActionTypes";
+import {
+  LOAD_COOKIE_TOKEN,
+  LOGIN_SUCCESS,
+  LoginActionType,
+  LOGOUT,
+} from "./loginActionTypes";
 import { emptyUserTokenDto } from "../../api/login/userTokenDto";
 
 export function loginReducer(

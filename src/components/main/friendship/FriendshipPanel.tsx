@@ -16,6 +16,8 @@ import { AppState } from "../../../redux/appState";
 import { connect } from "react-redux";
 import "../MainPage.css";
 import FriendshipCard from "./FriendshipCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   friendships: Friendships;
@@ -48,7 +50,14 @@ const FriendshipPanel = ({
 
   return (
     <div className="container">
-      <h4 className="text-left">Friendships</h4>
+      <div className="row">
+        <div className="col-1 mt-1">
+          <FontAwesomeIcon icon={faUserFriends} onClick={() => {}} />
+        </div>
+        <div className="col-8">
+          <h4 className="text-left">Friendships</h4>
+        </div>
+      </div>
       <br />
       <div className="mx-2">
         <form

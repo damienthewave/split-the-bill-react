@@ -4,7 +4,6 @@ import { AppState } from "../../redux/appState";
 import { SignupDto } from "../../api/signup/signupDtos";
 import { signup } from "../../redux/signup/signupActions";
 import { connect } from "react-redux";
-import { LOGIN_PAGE_SUFFIX } from "../../routes";
 import MainNavbar from "./MainNavbar";
 import { emptyPersonReadDto, PersonReadDto } from "../../api/person/personDtos";
 
