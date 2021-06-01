@@ -26,7 +26,6 @@ export function getFriendships() {
     return friendshipsApi
       .getFriendships()
       .then((friendships: Friendships | void) => {
-        console.log(friendships);
         dispatch(friendshipsFetched(friendships));
       })
       .catch((error) => {
@@ -73,11 +72,9 @@ export function acceptFriendship(toAccept: Friendship) {
     return friendshipsApi
       .acceptFriendship(toAccept.id)
       .then((friendship: Friendship | void) => {
-        console.log("disp", friendship);
         dispatch(friendshipAccepted(friendship));
       })
       .catch((error) => {
-        console.log("err", error);
         dispatch(apiCallError(error));
         throw error;
       });

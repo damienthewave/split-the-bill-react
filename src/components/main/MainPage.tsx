@@ -28,9 +28,6 @@ const MainPage: React.FC<MainPageProps> = ({ person, getPerson }) => {
     return <Redirect to={CREATE_PERSON_PAGE_SUFFIX} />;
   }
 
-  const cookies = new Cookies()
-  console.log(cookies.get('token'))
-
   return (
     <div>
       <div className="mx-5 px-5 mt-3">

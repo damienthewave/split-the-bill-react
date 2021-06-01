@@ -53,10 +53,10 @@ function loggedOut() : LoginActionType {
 }
 
 export function logout() {
-  console.log("LOGOUT")
   return function(dispatch: Function) {
     const cookies = new Cookies();
     cookies.remove('token')
     dispatch(loggedOut())
+    window.location.reload()
   };
 }

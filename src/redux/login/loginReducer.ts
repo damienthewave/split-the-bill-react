@@ -7,7 +7,6 @@ export function loginReducer(
   state: typeof appState.userToken = appState.userToken,
   action: LoginActionType | SignupActionType
 ): typeof appState.userToken {
-  console.log('reducer :)')
   switch (action.type) {
     case LOGIN_SUCCESS:
       return action.userToken;

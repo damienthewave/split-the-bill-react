@@ -1,5 +1,4 @@
-import { applyMiddleware, createStore, Store, compose } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { applyMiddleware, compose, createStore, Store } from "redux";
 import { rootReducer } from "./rootReducer";
 import thunk from "redux-thunk";
 import { AppState, appState } from "./appState";
@@ -12,7 +11,7 @@ declare global {
 }
 
 export function configureStore(): Store<AppState> {
-  const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
+  const composeEnhancers = window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] as typeof compose || compose;
 
   return createStore(
     rootReducer,
