@@ -5,9 +5,7 @@ import { GroupContext } from "./GroupPanel";
 //@ts-ignore
 import {Multiselect} from 'multiselect-react-dropdown';
 import {loadGroups} from "../../../redux/group/groupActions"
-import {
-  getFriendships,
-} from "../../../redux/friendships/friendshipActions";
+import {getFriendships,} from "../../../redux/friendships/friendshipActions";
 import { Friendships, Friendship } from "../../../api/friendships/friendshipDtos";
 import { AppState } from "../../../redux/appState";
 import { connect } from "react-redux";
