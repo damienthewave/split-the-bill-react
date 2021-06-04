@@ -1,4 +1,4 @@
-import { HalLink } from "../halLink";
+import { ExpenseReadDto } from "./expenseDtos";
 
 export interface GroupReadDto {
   groupId: number
@@ -13,25 +13,22 @@ export interface GroupDetailDto{
   name: string
   photoPath: string
   members: GroupReadDto[]
+  expenses: ExpenseReadDto[]
 }
-
-export const emptyGroupCollection: GroupReadDto[] = [];
 
 export interface GroupFormDto{
   name: string,
-  membersIds: number[]
+  membersIds: number[],
+  photoPath: string
 }
 
 export const EmptyGroupDetailDto: GroupDetailDto = {
   id: 0,
   name: "",
   photoPath: "",
-  members: []
+  members: [],
+  expenses: []
 }
-// export const emptyGroupReadDto: GroupReadDto = {
-//   groupId: 0,
-//   groupMemberId: 0,
-//   personId: 0,
-//   name: "",
-//   memberBalance: new Map<string, number>()
-// }
+
+export const emptyGroupCollection: GroupReadDto[] = [];
+

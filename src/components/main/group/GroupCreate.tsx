@@ -1,15 +1,14 @@
 
-import {  EmptyGroupDetailDto, GroupDetailDto, GroupFormDto } from "../../../api/group/groupDtos";
-import React, { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
-import { loadGroupDetails } from "../../../api/group/groupApi";
-import ApiCallError, { NoPersonAssignedError } from "../../../api/apiCallError";
-import { useHistory } from "react-router-dom"
-import { GROUPS_PAGE_SUFFIX } from "../../../routes";
+import {GroupFormDto } from "../../../api/group/groupDtos";
+import {FormEvent, useContext, useEffect, useState } from "react";
 import { GroupContext } from "./GroupPanel";
+//@ts-ignore
+import {Multiselect} from 'multiselect-react-dropdown';
+import {loadGroups} from "../../../redux/group/groupActions"
 import {
   getFriendships,
 } from "../../../redux/friendships/friendshipActions";
-import { Friendships } from "../../../api/friendships/friendshipDtos";
+import { Friendships, Friendship } from "../../../api/friendships/friendshipDtos";
 import { AppState } from "../../../redux/appState";
 import { connect } from "react-redux";
 import { createGroup } from "../../../redux/group/groupActions";
@@ -19,43 +18,54 @@ interface Props {
   friendships: Friendships;
   getFriendships: () => Promise<void>;
   createGroup: (groupCreateDto: GroupFormDto) => Promise<void>;
+  loadGroups: () => Promise<void>;
 }
 
-const GroupCreate = ({friendships, getFriendships, createGroup}: Props) => {
+const GroupCreate = ({friendships, getFriendships, createGroup, loadGroups }: Props) => {
 
   useEffect(() => {
     getFriendships();
   }, []);
 
+  const myContext = useContext(GroupContext)
   const [groupName, setGrupName] = useState<string>("")
   const [groupMembers, setGroupMembers] = useState<number[]>([])
+  const [photoPath, setPhotoPath] = useState<string>("")
 
   function onSubmitClick (event: FormEvent): void {
     event.preventDefault()
-    console.log("Submit!")
-    createGroup({name: groupName, membersIds: groupMembers}).catch(e => {
-      toast.error("Server error while creating new group");
+    createGroup({name: groupName, membersIds: groupMembers, photoPath})
+      .then((data: any) =>{
+        toast.success("Group added succesfully! ");
+        loadGroups()
+          .then(() => myContext.selectGroupNumber(data.group.id))})
+      .catch(e => {
+        toast.error("Server error while creating new group");
     });
   }
-  const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const personId: string = e.currentTarget.value
-    console.log("VALUE: " + personId)
-    setGroupMembers((groupMembers) => {
-                return[...groupMembers, parseInt(personId)]})
+  const onSelectChange = (selectedList: any, selectedIte: any) => {
+    let groupMembersIds = []
+    groupMembersIds = selectedList.map((friend: Friendship) => friend.id)
+    setGroupMembers(groupMembersIds)
   }
     return (
-    <div>
+    <div className="float-xl-left w-100">
+      <hr/>
       <form onSubmit = {onSubmitClick}>
         <div className="form-group">
           <input type="text" className="form-control" placeholder="Group name" onChange={(e) => setGrupName(e.currentTarget.value)}></input>
         </div>
         <div className="form-group">
-          <select className="custom-select my-1 mr-sm-2" onChange={(e) => onSelectChange(e)}>
-            <option value={0}>Add members...</option>
-            {friendships.confirmed.map( friend => {
-              return <option value={friend.id}>{friend.personName}</option>
-            })}
-          </select>
+          <input type="text" className="form-control" placeholder="Photo URL" onChange={(e) => setPhotoPath(e.currentTarget.value)}></input>
+        </div>
+        <div className="form-group">
+          <Multiselect
+          placeholder="Pick group members..."
+          options={friendships.confirmed}
+          onSelect={onSelectChange}
+          onRemove={onSelectChange}
+          displayValue="personName"
+          />
         </div>
         <div className="form-group">
           <button type="submit" className="btn btn-primary my-1">Add group</button>
@@ -72,8 +82,9 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = {
+  loadGroups,
   getFriendships,
-  createGroup
+  createGroup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupCreate);

@@ -23,17 +23,12 @@ export function loadGroups() {
 }
 
 export function createGroup(groupCreateDto: GroupFormDto) {
-  console.log("GroupActions name: " + groupCreateDto.name, " members: "+ groupCreateDto.membersIds)
   return function(dispatch: Function) {
-    console.log("Begin api call start")
     dispatch(beginApiCall())
-    console.log("Begin api call done")
     return groupApi.createGroup(groupCreateDto)
       .then((group) => {
-        console.log("GroupActions: " + group); 
         return dispatch(createGroupSuccess(group))})
       .catch((error) => {
-        console.log("Redux error")
         dispatch(apiCallError(error));
         throw error;
       })

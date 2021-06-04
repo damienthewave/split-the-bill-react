@@ -13,11 +13,10 @@ export const GroupContext = React.createContext({selectGroupNumber: (groupId: nu
 const GroupPanel = (props: Props) => {
 
   const [detailsSelected, setDetailsSelected] = useState<boolean>(false);
-  const [createNewSelected, setCreateNewSelected] = useState<boolean>(false);
+  const [createNewSelected, setCreateNewSelected] = useState<boolean>(true);
   const [groupNumberSelected, setGroupNumberSelected] = useState<number>(0);
   
   const selectGroupNumber = (groupId: number) => {
-    console.log("GroupPAnel, groupID: " + groupId)
     setGroupNumberSelected(groupId)
     setDetailsSelected(true)
     setCreateNewSelected(false)
@@ -26,11 +25,14 @@ const GroupPanel = (props: Props) => {
   return (
     <GroupContext.Provider value={{selectGroupNumber}}>
       <div className="container">
-      <h4 className="text-left">Groups</h4>
-      <button className="btn btn-outline-primary py-0 btn-round" onClick={() => {setCreateNewSelected(true); setDetailsSelected(false)}}>Add new group</button>
+
+      <h1 className="text-left">Groups</h1>
+      <div className="text-right">
+        <button className="btn btn-outline-primary btn-round" onClick={() => {setCreateNewSelected(true); setDetailsSelected(false)}}>Add new group</button>
+      </div>
       <br />
-      <div className="row">
-        <div className="col"><GroupPage/></div>
+      <div className="d-flex flex-row">
+        <div className="p-1"><GroupPage/></div>
         <div className="col">
           {detailsSelected && <GroupDetails groupId={groupNumberSelected}/>}
           {createNewSelected && <GroupCreate/>}

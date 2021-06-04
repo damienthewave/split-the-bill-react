@@ -4,7 +4,6 @@ import "./App.css";
 import LoginPage from "./login/LoginPage";
 import MainPage from "./main/MainPage";
 import SignupPage from "./signup/SignupPage";
-import GroupDetails from "./group/GroupDetails";
 import { ToastContainer } from "react-toastify";
 import CreatePersonPage from "./person/CreatePersonPage";
 import {
@@ -29,9 +28,6 @@ function App() {
             path={CREATE_PERSON_PAGE_SUFFIX}
             component={CreatePersonPage}
           />
-        </ProtectedRoute>
-        <ProtectedRoute path={GROUPS_PAGE_SUFFIX}>
-          <Route exact path={GROUPS_PAGE_SUFFIX+"/:id"} component={GroupDetails} />
         </ProtectedRoute>
         <ProtectedRoute path="/">
           <MainPage />

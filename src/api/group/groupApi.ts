@@ -16,8 +16,7 @@ export function loadGroupDetails(groupId: number) {
 }
 
 export function createGroup(groupCreateDto: GroupFormDto) {
-  console.log("groupApi groupcreateDto: " + groupCreateDto)
   return axios.post(GROUPS_URL, groupCreateDto)
-    .then(response => {console.log("groupApi: " + response.data); return response.data})
+    .then(response => {return response.data})
     .catch(handleError);
 }

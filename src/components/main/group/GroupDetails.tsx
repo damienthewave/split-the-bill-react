@@ -2,7 +2,6 @@ import { EmptyGroupDetailDto, GroupDetailDto } from "../../../api/group/groupDto
 import React, { useEffect, useState } from "react";
 import { loadGroupDetails } from "../../../api/group/groupApi";
 import ApiCallError from "../../../api/apiCallError";
-import { useHistory } from "react-router-dom"
 
 
 interface GroupTileProps {
@@ -11,29 +10,60 @@ interface GroupTileProps {
 
 const GroupDetails: React.FC<GroupTileProps> = ({groupId}) =>{
   const [groupDetails, setGroupDetails] = useState<GroupDetailDto>(EmptyGroupDetailDto)
+  const [displayExpensesDebtors, setDisplayExpensesDebtors] = useState<number[]>([])
+  const [totalAmountsToPayForExpense, setTotalAmountsToPayForExpense] = useState<Map<number, number>>(new Map())
 
-  let history = useHistory()
+  function calculateAmountToPay(expenseId: number, total: number, weight: number): string {
+    let multiplier: number = 1
+    let totalWeight: number | undefined = totalAmountsToPayForExpense.get(expenseId)
+    if(totalWeight)
+      multiplier = weight/totalWeight
+    return (total*multiplier).toFixed(2)
+  }
+
+  const calculateTotalWeightsForExpense = () => {
+    let result: Map<number, number> = new Map()
+    groupDetails.expenses.forEach(expense => {
+      let totalWeight: number = 0
+      expense.debtors.forEach(debtor => {
+        totalWeight += debtor.weight
+      });
+      result.set(expense.expenseId, totalWeight)
+    })
+    setTotalAmountsToPayForExpense(result);
+  }
+
+  const addTodisplayExpensesDebtors = (expenseId: number) => {
+    let newDisplayDebtors = displayExpensesDebtors
+    if(displayExpensesDebtors.includes(expenseId)){
+      setDisplayExpensesDebtors(newDisplayDebtors.filter((id) => id != expenseId))
+    } else {
+      setDisplayExpensesDebtors([...newDisplayDebtors, expenseId])
+    }
+  }
+
+  useEffect(() => {
+    calculateTotalWeightsForExpense();
+  }, [totalAmountsToPayForExpense])
 
   useEffect(() => {
     loadGroupDetails(groupId)
       .then((data) => {
-        setGroupDetails(data as GroupDetailDto)
-      })
+        setGroupDetails(data as GroupDetailDto)})
       .catch((e: ApiCallError) => {  });
   }, [groupId]);
 
-  console.log(groupDetails.members)
   return<div>
     <h1>{groupDetails.name}</h1>
     <div className='card mb-3'>
-        <img className="card-img-top" style={{width:"600px", height:"200px", objectFit:"cover", objectPosition:"100% 50%"}}src={groupDetails.photoPath ? groupDetails.photoPath : "https://comfort-flight.pl/wp-content/uploads/2020/02/2-people-sitting-with-view-of-yellow-flowers-during-daytime-196666.jpg"} alt="back" />
+        <img className="card-img-top" style={{width:"100%", height:"200px", objectFit:"cover", objectPosition:"100% 50%"}}src={groupDetails.photoPath ? groupDetails.photoPath : "https://comfort-flight.pl/wp-content/uploads/2020/02/2-people-sitting-with-view-of-yellow-flowers-during-daytime-196666.jpg"} alt="back" />
     </div>
     <h2>Group members</h2>
     <table className="table">
       <thead>
       <tr>
         <th scope="col">Group member name</th>
-        <th scope="col">Manage expenses</th>
+        <th scope="col">Balance</th>
       </tr>
       </thead>
       <tbody>
@@ -41,19 +71,53 @@ const GroupDetails: React.FC<GroupTileProps> = ({groupId}) =>{
         <tr>
           <td>{member.name}</td>
           <td>
-            <button className="btn btn-light">
-              Show expenses
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-compact-down" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/>
-            </svg>
-            </button>
+            {Object.entries(member.memberBalance).map((key) => {
+              if(key[1] < 0){
+                return <li className="list-group-item list-group-item-danger">{key[1]}  {key[0]}</li>}
+              else{
+                return <li className="list-group-item list-group-item-success">{key[1]}  {key[0]}</li>}})}
             </td>
           </tr>)}
         <tr>
           <td colSpan={2}>
-            <h3>New group member <span className="badge badge-primary">Add</span></h3>
+            <button className="btn btn-outline-primary btn-round">Add group member</button>
           </td>
         </tr>    
+      </tbody>
+    </table>
+      
+    <br/>
+    <br/>
+    <h2>Group expenses</h2>
+    <table className="table">
+      <thead>
+      <tr>
+        <th scope="col">Expense name</th>
+        <th scope="col">Total amount</th>
+        <th scope="col">Creditor</th>
+        <th scope="col">Debtors</th>
+      </tr>
+      </thead>
+      <tbody>
+        {groupDetails.expenses.map( (expense) =>{return<tr>
+          <td>{expense.title}</td>
+          <td>{expense.amount} {expense.currency}</td>
+          <td>
+            {groupDetails.members.map(member => {
+                  if(member.groupMemberId ===expense.creditorMemberId)
+                    return<span>{member.name}</span>})}
+          </td>
+          <td>  
+            <button onClick={() => addTodisplayExpensesDebtors(expense.expenseId)} type="button" className="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+              Debtors <span className="badge badge-primary">{expense.debtors.length-1}</span>
+            </button>
+            {displayExpensesDebtors.includes(expense.expenseId) && <ul className="list-group">
+            {expense.debtors.map((debtor) =>(debtor.debtorId !== expense.creditorMemberId)&&<li className="list-group-item">
+              {debtor.name} - {calculateAmountToPay(expense.expenseId, expense.amount, debtor.weight)} {expense.currency}
+            </li>)}
+            </ul>}
+          </td>
+        </tr>})}
       </tbody>
     </table>
   </div>

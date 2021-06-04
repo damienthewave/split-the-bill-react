@@ -1,5 +1,5 @@
 import { GroupReadDto } from "../../../api/group/groupDtos";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import GroupTile from "./GroupTile"
 
 
@@ -9,9 +9,6 @@ interface GroupListProps {
 
 const GroupList: React.FC<GroupListProps> = ({ groups}) => {
 
-  const handleAddNewGroup = () => {
-    console.log("Adding new group...")
-  }
   if (groups.length < 1) {
     return (
       <h2 className='section-title'>
@@ -20,8 +17,8 @@ const GroupList: React.FC<GroupListProps> = ({ groups}) => {
     )
   }
   return (
-    <div>
-      {groups.map( (group) => <GroupTile key={group.groupId} groupId={group.groupId}/>)}
+    <div className="overflow-auto" style={{height:"1200px", marginRight:"20px", paddingRight:"20px"}}>
+      {groups.map( (group) => <GroupTile key={group.groupId} groupId={group.groupId} memberBalance={group.memberBalance}/>)}
     </div>
   )
 };

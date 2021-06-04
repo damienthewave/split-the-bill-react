@@ -9,7 +9,7 @@ export function groupReducer(
     case LOAD_GROUPS_SUCCESS:
       return action.groups;
     case CREATE_GROUP_SUCCESS:
-      return [...state, action.group]
+      return [...state]
     default:
       return state;
   }
