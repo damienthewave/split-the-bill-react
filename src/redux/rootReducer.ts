@@ -4,6 +4,7 @@ import { loginReducer } from "./login/loginReducer";
 import { personReducer } from "./person/personReducer";
 import { currencyReducer } from "./currency/currencyReducer";
 import { friendshipReducer } from "./friendships/friendshipReducer";
+import { groupReducer } from "./group/groupReducer";
 
 export const rootReducer = combineReducers({
   apiCallsInProgress: apiStatusReducer,
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
   person: personReducer,
   currencies: currencyReducer,
   friendships: friendshipReducer,
+  groups: groupReducer
 });

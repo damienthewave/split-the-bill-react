@@ -7,7 +7,7 @@ import ApiCallError, { NoPersonAssignedError } from "../../api/apiCallError";
 import { Redirect } from "react-router";
 import { CREATE_PERSON_PAGE_SUFFIX } from "../../routes";
 import FriendshipPanel from "./friendship/FriendshipPanel";
-import GroupPanel from "./GroupPanel";
+import GroupPanel from "./group/GroupPanel";
 
 interface MainPageProps {
   person: PersonReadDto;

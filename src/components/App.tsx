@@ -11,6 +11,7 @@ import {
   CREATE_PERSON_PAGE_SUFFIX,
   LOGIN_PAGE_SUFFIX,
   SIGNUP_PAGE_SUFFIX,
+  GROUPS_PAGE_SUFFIX 
 } from "../routes";
 import ProtectedRoute from "./common/ProtectedRoute";
 import "react-toastify/dist/ReactToastify.css";
