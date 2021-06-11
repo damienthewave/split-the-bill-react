@@ -11,4 +11,5 @@ export interface ExpenseReadDto{
   debtors: DebtorReadDto[]
   amount: number
   currency: string
+  created: string
 }

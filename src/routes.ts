@@ -14,3 +14,5 @@ export const ADD_EXPENSE_PAGE = APP_BASE_URL + ADD_EXPENSE_PAGE_SUFFIX;
 
 export const GROUPS_PAGE_SUFFIX = "/groups";
 export const GROUPS_PAGE = APP_BASE_URL + GROUPS_PAGE_SUFFIX;
+
+export const STATISTICS_PAGE = "/statistics"

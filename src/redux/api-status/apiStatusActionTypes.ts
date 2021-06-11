@@ -3,6 +3,7 @@ import { LoginActionType } from "../login/loginActionTypes";
 import { PersonActionType } from "../person/personActionTypes";
 import { CurrencyActionType } from "../currency/currencyActionTypes";
 import { FriendshipsActionType } from "../friendships/friendshipActionTypes";
+import { StatisticsActionType } from "../statistics/statisticsActionTypes";
 
 export const BEGIN_API_CALL = "BEGIN_API_CALL";
 export const API_CALL_ERROR = "API_CALL_ERROR";
@@ -25,4 +26,5 @@ export type ActionType =
   | LoginActionType
   | PersonActionType
   | CurrencyActionType
-  | FriendshipsActionType;
+  | FriendshipsActionType
+  | StatisticsActionType;

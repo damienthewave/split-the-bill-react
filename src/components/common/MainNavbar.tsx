@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "../../redux/login/loginActions";
 import { connect } from "react-redux";
-import { ADD_EXPENSE_PAGE_SUFFIX } from "../../routes";
+import { ADD_EXPENSE_PAGE_SUFFIX, STATISTICS_PAGE } from "../../routes";
 
 interface Props {
   person: PersonReadDto;
@@ -43,6 +43,11 @@ const MainNavbar = ({ person, logout }: Props) => {
         <div className="navbar-nav">
           <Link to={ADD_EXPENSE_PAGE_SUFFIX}>
             <a className="nav-item nav-link">Add a new Expense</a>
+          </Link>
+        </div>
+        <div className="navbar-nav">
+          <Link to={STATISTICS_PAGE}>
+            <a className="nav-item nav-link">Statistics</a>
           </Link>
         </div>
       </div>
