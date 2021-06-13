@@ -15,10 +15,13 @@ export const FRIENDSHIPS_ACCEPT_URL = (id: number) =>
 export const FRIENDSHIPS_BREAK_URL = (id: number) =>
   FRIENDSHIPS_URL + "/" + id + "/break";
 
-export const GROUPS_URL = BASE_URL + "/groups"
+export const GROUPS_URL = BASE_URL + "/groups";
 
-export const GROUPS_ADD_MEMBER_URL = (groupId:number, personId: number) =>
+export const GROUPS_ADD_MEMBER_URL = (groupId: number, personId: number) =>
   GROUPS_URL + "/" + groupId + "/add?personId=" + personId;
 
+export const GROUPS_ADD_EXPENSE_URL = (groupId: number) =>
+  `${GROUPS_URL}/${groupId}/expenses`;
+
 export const STATISTICS_URL = BASE_URL + "/statistics";
-export const STAT_ALL_PERSON_EXPENSES_URL = STATISTICS_URL + "/allExpenses"
+export const STAT_ALL_PERSON_EXPENSES_URL = STATISTICS_URL + "/allExpenses";

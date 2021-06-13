@@ -42,12 +42,12 @@ const MainNavbar = ({ person, logout }: Props) => {
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div className="navbar-nav">
           <Link to={ADD_EXPENSE_PAGE_SUFFIX}>
-            <a className="nav-item nav-link">Add a new Expense</a>
+            <div className="nav-item nav-link">Add a new expense</div>
           </Link>
         </div>
         <div className="navbar-nav">
           <Link to={STATISTICS_PAGE}>
-            <a className="nav-item nav-link">Statistics</a>
+            <div className="nav-item nav-link">Statistics</div>
           </Link>
         </div>
       </div>
