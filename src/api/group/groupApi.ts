@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GROUPS_URL } from "../apiUrls";
+import { GROUPS_ADD_MEMBER_URL, GROUPS_URL } from "../apiUrls";
 import { handleError } from "../apiUtils";
 import { GroupReadDto, GroupDetailDto, GroupFormDto } from "./groupDtos";
 
@@ -17,6 +17,12 @@ export function loadGroupDetails(groupId: number) {
 
 export function createGroup(groupCreateDto: GroupFormDto) {
   return axios.post(GROUPS_URL, groupCreateDto)
+    .then(response => {return response.data})
+    .catch(handleError);
+}
+
+export function addGroupMember(groupId: number, personId: number) {
+  return axios.patch(GROUPS_ADD_MEMBER_URL(groupId, personId))
     .then(response => {return response.data})
     .catch(handleError);
 }

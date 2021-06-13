@@ -28,7 +28,7 @@ const GroupTile: React.FC<GroupTileProps> = ({groupId, memberBalance}) => {
   }, []);
 
     return (
-    <div className='card' style={{width: "12rem", marginTop: "15px"}}>
+    <div key={groupId} className='card' style={{width: "12rem", marginTop: "15px"}}>
       {groupDetails.photoPath && <img className="card-img-top" 
         src={groupDetails.photoPath} alt={groupDetails.name} />} 
       {!groupDetails.photoPath && <LoadingSpinnerContainer/>} 
@@ -36,9 +36,9 @@ const GroupTile: React.FC<GroupTileProps> = ({groupId, memberBalance}) => {
         <h5 className="card-title">{groupDetails.name}</h5>
          {Object.entries(memberBalance).map((key) => {
               if(key[1] < 0){
-                return <li className="list-group-item list-group-item-danger">Balance: {key[1]}  {key[0]}</li>}
+                return <li key={Math.random()} className="list-group-item list-group-item-danger">Balance: {key[1]}  {key[0]}</li>}
               else{
-                return <li className="list-group-item list-group-item-success">Balance: {key[1]}  {key[0]}</li>}})}
+                return <li key={Math.random()} className="list-group-item list-group-item-success">Balance: {key[1]}  {key[0]}</li>}})}
         <button  onClick={() => onTileClick()} className="btn btn-link">Details</button>
       </div>
     </div>

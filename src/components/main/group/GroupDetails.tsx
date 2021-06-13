@@ -1,17 +1,26 @@
 import { EmptyGroupDetailDto, GroupDetailDto } from "../../../api/group/groupDtos";
 import React, { useEffect, useState } from "react";
-import { loadGroupDetails } from "../../../api/group/groupApi";
+import { addGroupMember, loadGroupDetails } from "../../../api/group/groupApi";
+import {getFriendships,} from "../../../redux/friendships/friendshipActions";
 import ApiCallError from "../../../api/apiCallError";
+import { METHODS } from "http";
+import { AppState } from "../../../redux/appState";
+import { connect } from "react-redux";
+import { FRIENDSHIPS_ACCEPT_URL } from "../../../api/apiUrls";
+import { Friendships } from "../../../api/friendships/friendshipDtos";
 
 
-interface GroupTileProps {
+interface GroupDetailsProps {
   groupId: number;
+  friendships: Friendships;
+  getFriendships: () => Promise<void>;
 }
 
-const GroupDetails: React.FC<GroupTileProps> = ({ groupId }) => {
+const GroupDetails: React.FC<GroupDetailsProps> = ({ groupId, friendships, getFriendships }) => {
   const [groupDetails, setGroupDetails] = useState<GroupDetailDto>(EmptyGroupDetailDto);
   const [displayExpensesDebtors, setDisplayExpensesDebtors] = useState<number[]>([]);
   const [totalAmountsToPayForExpense, setTotalAmountsToPayForExpense] = useState<Map<number, number>>(new Map());
+  const [personIdToAdd, setPersonIdToAdd] = useState<number>(-1);
 
   function calculateAmountToPay(expenseId: number, total: number, weight: number): string {
     let multiplier: number = 1;
@@ -42,20 +51,36 @@ const GroupDetails: React.FC<GroupTileProps> = ({ groupId }) => {
     }
   };
 
+  const handleAddGroupMember = () => {
+    console.log("Adding" , personIdToAdd)
+    addGroupMember(groupId, personIdToAdd)
+    setPersonIdToAdd(-1)
+  }
+
+  const handleSelectChange = (event: { target: { value: any; }; }) => {
+    if(event.target.value != 'Open this select menu')
+      setPersonIdToAdd(parseInt(event.target.value))
+    else
+      setPersonIdToAdd(-1)
+  };
+
+  useEffect(() => {
+    getFriendships();
+  }, []);
+
   useEffect(() => {
     calculateTotalWeightsForExpense();
-  }, [totalAmountsToPayForExpense]);
+  }, [groupDetails]);
 
   useEffect(() => {
     loadGroupDetails(groupId)
       .then((data) => {
-        setGroupDetails(data as GroupDetailDto);
+        setGroupDetails(data as GroupDetailDto )
       })
-      .catch((e: ApiCallError) => {
-      });
+      .catch((e: ApiCallError) => {  });
   }, [groupId]);
 
-  return <div>
+  return<div className="overflow-auto" style={{height:"800px"}}>
     <h1>{groupDetails.name}</h1>
     <div className='card mb-3'>
       <img className="card-img-top"
@@ -72,24 +97,30 @@ const GroupDetails: React.FC<GroupTileProps> = ({ groupId }) => {
       </tr>
       </thead>
       <tbody>
-      {groupDetails.members.map((member) =>
-        <tr>
+        {groupDetails.members.map( (member) => 
+        <tr key={Math.random()}>
           <td>{member.name}</td>
           <td>
             {Object.entries(member.memberBalance).map((key) => {
-              if (key[1] < 0) {
-                return <li className="list-group-item list-group-item-danger">{key[1]} {key[0]}</li>;
-              } else {
-                return <li className="list-group-item list-group-item-success">{key[1]} {key[0]}</li>;
-              }
-            })}
-          </td>
-        </tr>)}
-      <tr>
-        <td colSpan={2}>
-          <button className="btn btn-outline-primary btn-round">Add group member</button>
+              if(key[1] < 0){
+                return <li key={Math.random()} className="list-group-item list-group-item-danger">{key[1]}  {key[0]}</li>}
+              else{
+                return <li key={Math.random()} className="list-group-item list-group-item-success">{key[1]}  {key[0]}</li>}})}
+            </td>
+          </tr>)}
+      {/* <tr>
+       
+        <td>
+          <select className="form-select" onChange={handleSelectChange} aria-label="Default select example" defaultValue="Open this select menu">
+            {friendships.confirmed.map(friendship => {return <option value={friendship.id}>
+              {friendship.personName}
+            </option>})}
+          </select>
         </td>
-      </tr>
+        <td>
+          <button className="btn btn-outline-primary btn-round" onClick={handleAddGroupMember}>Add group member</button>
+        </td>
+      </tr> */}
       </tbody>
     </table>
 
@@ -106,28 +137,22 @@ const GroupDetails: React.FC<GroupTileProps> = ({ groupId }) => {
       </tr>
       </thead>
       <tbody>
-      {groupDetails.expenses.map((expense) => {
-        console.log(expense)
-        return <tr>
+        {groupDetails.expenses.map( (expense) =>{return<tr key={Math.random()}>
           <td>{expense.title}</td>
           <td>{expense.amount} {expense.currency}</td>
           <td>
             {groupDetails.members.map(member => {
-              if (member.groupMemberId === expense.creditorMemberId)
-                return <span>{member.name}</span>;
-            })}
+                  if(member.groupMemberId ===expense.creditorMemberId)
+                    return<span key={Math.random()}>{member.name}</span>})}
           </td>
-          <td>
-            <button onClick={() => addTodisplayExpensesDebtors(expense.expenseId)} type="button"
-                    className="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true"
-                    aria-controls="collapseExample">
-              Debtors <span className="badge badge-primary">{expense.debtors.length - 1}</span>
+          <td>  
+            <button onClick={() => addTodisplayExpensesDebtors(expense.expenseId)} type="button" className="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+              Debtors <span className="badge badge-primary">{expense.debtors.length}</span>
             </button>
             {displayExpensesDebtors.includes(expense.expenseId) && <ul className="list-group">
-              {expense.debtors.map((debtor) => (debtor.debtorId !== expense.creditorMemberId) &&
-                <li className="list-group-item">
-                  {debtor.name} - {calculateAmountToPay(expense.expenseId, expense.amount, debtor.weight)} {expense.currency}
-                </li>)}
+            {expense.debtors.map((debtor) => <li key={debtor.debtorId} className="list-group-item">
+              {debtor.name} - {calculateAmountToPay(expense.expenseId, expense.amount, debtor.weight)} {expense.currency}
+            </li>)}
             </ul>}
           </td>
         </tr>;
@@ -138,4 +163,14 @@ const GroupDetails: React.FC<GroupTileProps> = ({ groupId }) => {
 };
 
 
-export default (GroupDetails);
+const mapStateToProps = (state: AppState) => {
+   return {
+    friendships: state.friendships,
+  };
+};
+
+const mapDispatchToProps = {
+  getFriendships
+};
+
+export default connect(mapStateToProps, mapDispatchToProps) (GroupDetails);

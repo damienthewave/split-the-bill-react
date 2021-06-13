@@ -17,5 +17,8 @@ export const FRIENDSHIPS_BREAK_URL = (id: number) =>
 
 export const GROUPS_URL = BASE_URL + "/groups"
 
+export const GROUPS_ADD_MEMBER_URL = (groupId:number, personId: number) =>
+  GROUPS_URL + "/" + groupId + "/add?personId=" + personId;
+
 export const STATISTICS_URL = BASE_URL + "/statistics";
 export const STAT_ALL_PERSON_EXPENSES_URL = STATISTICS_URL + "/allExpenses"

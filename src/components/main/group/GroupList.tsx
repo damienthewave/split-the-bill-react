@@ -17,8 +17,8 @@ const GroupList: React.FC<GroupListProps> = ({ groups}) => {
     )
   }
   return (
-    <div className="overflow-auto" style={{height:"1200px", marginRight:"20px", paddingRight:"20px"}}>
-      {groups.map( (group) => <GroupTile key={group.groupId} groupId={group.groupId} memberBalance={group.memberBalance}/>)}
+    <div className="overflow-auto" style={{height:"800px", marginRight:"20px", paddingRight:"20px"}}>
+      {groups.map( (group) => <GroupTile key={"gt"+ group.groupId} groupId={group.groupId} memberBalance={group.memberBalance}/>)}
     </div>
   )
 };

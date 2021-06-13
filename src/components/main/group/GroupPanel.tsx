@@ -24,7 +24,7 @@ const GroupPanel = (props: Props) => {
 
   return (
     <GroupContext.Provider value={{selectGroupNumber}}>
-      <div className="container">
+      <div className="container" style={{}}>
 
       <h1 className="text-left">Groups</h1>
       <div className="text-right">
@@ -34,7 +34,7 @@ const GroupPanel = (props: Props) => {
       <div className="d-flex flex-row">
         <div className="p-1"><GroupPage/></div>
         <div className="col">
-          {detailsSelected && <GroupDetails groupId={groupNumberSelected}/>}
+          {detailsSelected && <GroupDetails key={'detailsid' + groupNumberSelected} groupId={groupNumberSelected}/>}
           {createNewSelected && <GroupCreate/>}
           {!createNewSelected && !detailsSelected && <h1>Select your group</h1>}
         </div>
