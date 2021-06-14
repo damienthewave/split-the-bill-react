@@ -58,7 +58,6 @@ const AddExpensePage = (props: Props) => {
 
   function addDebtor() {
     if (selectedGroup) {
-      console.log("addDebtor", newDebtorId, newDebtorWeight);
       let member = selectedGroup.members.find(
         (member: GroupReadDto) => member.groupMemberId === newDebtorId
       );
